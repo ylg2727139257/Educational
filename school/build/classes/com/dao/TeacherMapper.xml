@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TeacherMapper">
+	<!--  查询 -->
+   	<select id="findTeacher" parameterType="Teacher" resultType= "Teacher">
+    	select * from teacher
+    	<where>
+         <if test="tname!=null and tname!=''">
+            and tname like #{tname}
+         </if>
+         <if test="tid!=null and tid!=0">
+            and tid = #{tid}
+         </if>
+      </where>
+      	<if test="cnote!=null and cnote!='' and cnote=='tid'">
+	        order by tid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='tid/desc'">
+	        order by tid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='tname'">
+	        order by tname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='tname/desc'">
+	        order by tname desc
+	     </if>
+	     <if test="cnote!=null and cnote!='' and cnote=='age'">
+	        order by age
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='age/desc'">
+	        order by age desc
+	     </if>
+   </select>
+   <!--  添加 -->
+   <insert id="insertTeacher" parameterType="Teacher" >
+      insert into teacher(tkey,tname,sex,age,phone,email) 
+         values(#{tkey},#{tname},#{sex},#{age},#{phone},#{email})
+   </insert>
+   <!--  修改 -->
+   <update id="updateTeacher" parameterType="Teacher" >
+      update teacher set tkey=#{tkey},tname=#{tname},sex=#{sex},age=#{age},
+      phone=#{phone},email=#{email} where tid=#{tid}
+   </update>
+   <!--  删除 -->
+   <delete id="deleteTeacher" parameterType="Teacher" >
+      delete from teacher where tid=#{tid}
+   </delete>
+</mapper>

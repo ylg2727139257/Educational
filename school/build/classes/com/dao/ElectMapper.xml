@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ElectMapper">
+	<!--  查询 -->
+   	<select id="findElect" parameterType="Elect" resultType= "Elect">
+    	select * from elect
+    	<where>
+         <if test="sid!=null and sid!=0">
+            and sid = #{sid}
+         </if>
+         <if test="cid!=null and cid!=0">
+            and cid = #{cid}
+         </if>
+      </where>
+   </select>
+   <!--  添加 -->
+   <insert id="insertElect" parameterType="Elect" >
+      insert into elect(sid,cid,score) values(#{sid},#{cid},#{score})
+   </insert>
+   <!--  修改 -->
+   <update id="updateElect" parameterType="Elect" >
+      update elect set score=#{score} where sid=#{sid} and cid=#{cid}
+   </update>
+   <!--  删除 -->
+   <delete id="deleteElect" parameterType="Elect" >
+      delete from elect 
+		<where>
+	         <if test="sid!=null and sid!=0">
+	            and sid = #{sid}
+	         </if>
+	         <if test="cid!=null and cid!=0">
+	            and cid = #{cid}
+	         </if>
+	      </where>
+   </delete>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.StudentMapper">
+	<!--  查询 -->
+   	<select id="findStudent" parameterType="Student" resultType= "Student">
+    	select * from student
+    	<where>
+         <if test="sname!=null and sname!=''">
+            and sname like #{sname}
+         </if>
+         <if test="sid!=null and sid!=0">
+            and sid = #{sid}
+         </if>
+      </where>
+      	<if test="cnote!=null and cnote!='' and cnote=='sid'">
+	        order by sid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sid/desc'">
+	        order by sid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sname'">
+	        order by sname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sname/desc'">
+	        order by sname desc
+	     </if>
+	     <if test="cnote!=null and cnote!='' and cnote=='age'">
+	        order by age
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='age/desc'">
+	        order by age desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit'">
+	        order by credit
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit/desc'">
+	        order by credit desc
+	     </if>
+   </select>
+	<!-- 和elect表 联查  -->
+	<resultMap type="Student" id="findSE">
+		<id column="sid" property="sid"></id>
+		<result column="sname" property="sname"></result>
+		<result column="sex" property="sex"></result>
+		<result column="age" property="age"></result>
+		<result column="credit" property="credit"></result>
+		<result column="address" property="address"></result>
+		<result column="phone" property="phone"></result>
+		<result column="email" property="email"></result>
+		<collection property="elect" ofType="Elect" >
+			<result column="sid" property="sid"></result>
+			<result column="cid" property="cid"></result>
+			<result column="score" property="score"></result>
+		</collection>
+	</resultMap>
+   	<select id="findSE" parameterType="Student" resultMap="findSE">
+    	select s.*,e.* from student s,elect e
+    	<where>
+    		and s.sid=e.sid and e.cid = #{elect.cid}
+         <if test="sname!=null and sname!=''">
+            and s.sname like #{sname }
+         </if>
+      </where>
+      	<if test="cnote!=null and cnote!='' and cnote=='sid'">
+	        order by s.sid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sid/desc'">
+	        order by s.sid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sname'">
+	        order by s.sname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='sname/desc'">
+	        order by s.sname desc
+	     </if>
+	     <if test="cnote!=null and cnote!='' and cnote=='age'">
+	        order by s.age
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='age/desc'">
+	        order by s.age desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='score'">
+	        order by e.score
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='score/desc'">
+	        order by e.score desc
+	     </if>
+   </select>
+   <!--  添加 -->
+   <insert id="insertStudent" parameterType="Student" >
+      insert into student(skey,sname,sex,age,address,phone,email) 
+         values(#{skey},#{sname},#{sex},#{age},#{address},#{phone},#{email})
+   </insert>
+   <!--  修改 -->
+   <update id="updateStudent" parameterType="Student" >
+      update student set skey=#{skey},sname=#{sname},sex=#{sex},age=#{age},credit=#{credit},
+      address=#{address},phone=#{phone},email=#{email} where sid=#{sid}
+   </update>
+   <!--  删除 -->
+   <delete id="deleteStudent" parameterType="Student" >
+      delete from student where sid=#{sid}
+   </delete>
+</mapper>

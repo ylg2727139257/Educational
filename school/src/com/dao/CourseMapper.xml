@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CourseMapper">
+	<!--  查询 -->
+   	<select id="findCourse" parameterType="Course" resultType="Course" >
+    	select * from course
+    	<where>
+         <if test="cname!=null and cname!=''">
+            and cname like #{cname}
+         </if>
+         <if test="cid!=null and cid!=0">
+            and cid = #{cid}
+         </if>
+         <if test="tid!=null and tid!=0">
+            and tid = #{tid}
+         </if>
+         <if test="ctype!=null and ctype!=0">
+            and ctype = #{ctype}
+         </if>
+      </where>
+      	<if test="cnote!=null and cnote!='' and cnote=='cid'">
+	        order by cid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cid/desc'">
+	        order by cid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname'">
+	        order by cname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname/desc'">
+	        order by cname desc
+	     </if>
+	     <if test="cnote!=null and cnote!='' and cnote=='ctype'">
+	        order by ctype
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='ctype/desc'">
+	        order by ctype desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit'">
+	        order by credit
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit/desc'">
+	        order by credit desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cmax'">
+	        order by cmax
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cmax/desc'">
+	        order by cmax desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='curr'">
+	        order by curr
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='curr/desc'">
+	        order by curr desc
+	     </if>
+   </select>
+	<!--和teacher表联查 -->
+	<resultMap type="Course" id="findTC">
+		<id column="cid" property="cid"></id>
+		<result column="cname" property="cname"></result>
+		<result column="ctype" property="ctype"></result>
+		<result column="tid" property="tid"></result>
+		<result column="credit" property="credit"></result>
+		<result column="cmax" property="cmax"></result>
+		<result column="curr" property="curr"></result>
+		<association property="teacher" javaType="Teacher" >
+			<id column="tid" property="tid"></id>
+			<result column="tname" property="tname"></result>
+			<result column="sex" property="sex"></result>
+			<result column="age" property="age"></result>
+			<result column="phone" property="phone"></result>
+			<result column="email" property="email"></result>
+		</association>
+	</resultMap>
+   	<select id="findTC" resultMap="findTC" parameterType="Course">
+    	select c.*,t.* from course c,teacher t
+    	<where>
+    		and c.tid=t.tid
+    	 <if test="cname!=null and cname!=''">
+            and c.cname like #{cname}
+         </if>
+         <if test="ctype!=null and ctype!=0">
+            and c.ctype = #{ctype}
+         </if>
+      </where>
+         <if test="cnote!=null and cnote!='' and cnote=='cid'">
+	        order by c.cid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cid/desc'">
+	        order by c.cid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname'">
+	        order by c.cname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname/desc'">
+	        order by c.cname desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit'">
+	        order by c.credit
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit/desc'">
+	        order by c.credit desc
+	     </if>
+   </select>
+   
+   <!--和teacher表 联查(满员) -->
+   <select id="findTC1" resultMap="findTC" parameterType="Course">
+    	select c.*,t.* from course c,teacher t
+    	 where c.tid=t.tid and c.cmax=c.curr and c.ctype = #{ctype}
+    </select>
+   <!--和teacher表，elect表 联查(选修) -->
+   <select id="findTCE1" resultMap="findTC" parameterType="Course">
+    	select c.*,t.* from course c,teacher t
+    	<where>
+    		and c.tid=t.tid and c.cmax>c.curr
+            and c.cid not in (select cid from elect where sid=#{elect.sid})
+         <if test="ctype!=null and ctype!=0">
+            and c.ctype = #{ctype}
+         </if>
+         <if test="cname!=null and cname!=''">
+            and c.cname like #{cname}
+         </if>
+      </where>
+      	<if test="cnote!=null and cnote!='' and cnote=='cid'">
+	        order by c.cid
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cid/desc'">
+	        order by c.cid desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname'">
+	        order by c.cname
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='cname/desc'">
+	        order by c.cname desc
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit'">
+	        order by c.credit
+	     </if>
+         <if test="cnote!=null and cnote!='' and cnote=='credit/desc'">
+	        order by c.credit desc
+	     </if>
+   </select>
+	
+	<resultMap type="Course" id="findTCE">
+		<id column="cid" property="cid"></id>
+		<result column="cname" property="cname"></result>
+		<result column="ctype" property="ctype"></result>
+		<result column="tid" property="tid"></result>
+		<result column="credit" property="credit"></result>
+		<result column="cmax" property="cmax"></result>
+		<result column="curr" property="curr"></result>
+		<association property="teacher" javaType="Teacher" >
+			<id column="tid" property="tid"></id>
+			<result column="tname" property="tname"></result>
+			<result column="sex" property="sex"></result>
+			<result column="age" property="age"></result>
+			<result column="phone" property="phone"></result>
+			<result column="email" property="email"></result>
+		</association>
+		<association property="elect" javaType="Elect" >
+			<result column="sid" property="sid"></result>
+			<result column="cid" property="cid"></result>
+			<result column="score" property="score"></result>
+		</association>
+	</resultMap>
+	<!--和teacher表,elect表 联查 (已选)-->
+   	<select id="findTCE" resultMap="findTCE" parameterType="Course">
+    	select c.*,t.*,e.* from course c,teacher t,elect e
+    	<where>
+    		and c.tid=t.tid and e.cid=c.cid and e.sid=#{elect.sid}
+         <if test="ctype!=null and ctype!=0">
+            and c.ctype = #{ctype}
+         </if> 
+      </where>
+   </select>
+   <!--  添加 -->
+   <insert id="insertCourse" parameterType="Course" >
+      insert into course(tid,cname,ctype,credit,cmax,cnote) 
+         values(#{tid},#{cname},#{ctype},#{credit},#{cmax},#{cnote})
+   </insert>
+   <!--  修改 -->
+   <update id="updateCourse" parameterType="Course" >
+      update course set tid=#{tid},cname=#{cname},ctype=#{ctype},credit=#{credit},
+      cmax=#{cmax},curr=#{curr},cnote=#{cnote} where cid=#{cid}
+   </update>
+   <!--  删除 -->
+   <delete id="deleteCourse" parameterType="Course" >
+      delete from course where cid=#{cid}
+   </delete>
+</mapper>
